@@ -8,7 +8,7 @@ from os.path import exists
 from datetime import datetime
 
 # Set the environment to use both web servers
-env.hosts = ['<IP web-01>', '<IP web-02>']
+env.hosts = ['54.242.190.120', '54.237.115.5']
 
 
 def do_pack():
