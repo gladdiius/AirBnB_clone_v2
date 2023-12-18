@@ -1,10 +1,11 @@
+#!/usr/bin/env python3
+
 from fabric.api import local, env
 from datetime import datetime
 import os
 
 # Set the environment to use local by default
 env.hosts = ['localhost']
-
 
 def do_pack():
     """Generates a .tgz archive from the contents of the web_static folder."""
