@@ -4,11 +4,11 @@ Fabric script (based on the file 1-pack_web_static.py) that distributes an archi
 """
 
 from fabric.api import local, env, put, run
-from os.path import exists
+from os.path import exists, basename
 from datetime import datetime
 
 # Set the environment to use both web servers
-env.hosts = ['54.242.190.120', '54.237.115.5']
+env.hosts = ['54.237.115.5', '54.242.190.120']
 
 
 def do_pack():
@@ -45,15 +45,20 @@ def do_deploy(archive_path):
         put(archive_path, "/tmp/")
 
         # Get the filename without extension
-        filename = archive_path.split('/')[-1].split('.')[0]
+        filename = basename(archive_path)[:-4]
 
         # Uncompress the archive to /data/web_static/releases/<filename> on the web server
-        run("mkdir -p /data/web_static/releases/{}".format(filename))
+        run("mkdir -p /data/web_static/releases/{}/".format(filename))
         run("tar -xzf /tmp/{} -C /data/web_static/releases/{}/".format(
-            archive_path.split('/')[-1], filename))
+            basename(archive_path), filename))
 
         # Delete the archive from the web server
-        run("rm /tmp/{}".format(archive_path.split('/')[-1]))
+        run("rm /tmp/{}".format(basename(archive_path)))
+
+        # Move files to the correct location
+        run("mv /data/web_static/releases/{}/web_static/* /data/web_static/releases/{}/".format(
+            filename, filename))
+        run("rm -rf /data/web_static/releases/{}/web_static".format(filename))
 
         # Delete the symbolic link /data/web_static/current
         run("rm -f /data/web_static/current")
