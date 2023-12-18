@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-
+#  a Fabric script that generates a .tgz archive
 from fabric.api import local, env
 from datetime import datetime
 import os
