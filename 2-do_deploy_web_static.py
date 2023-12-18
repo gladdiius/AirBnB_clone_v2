@@ -66,6 +66,9 @@ def do_deploy(archive_path):
         # Create a new symbolic link /data/web_static/current linked to the new version
         run("ln -s /data/web_static/releases/{}/ /data/web_static/current".format(filename))
 
+        # Copy the HTML file to /data/web_static/current/
+        run("cp /data/web_static/releases/{}/my_index.html /data/web_static/current/".format(filename))
+
         return True
     except Exception as e:
         return False
