@@ -1,14 +1,12 @@
 #!/usr/bin/env bash
 # Install Nginx if not already installed
-if ! command -v nginx &> /dev/null; then
-    sudo apt-get update
+if ! dpkg -l | grep -q nginx; then
+    sudo apt-get -y update
     sudo apt-get -y install nginx
 fi
 
 # Create necessary folders
-sudo mkdir -p /data/web_static/releases/test
-sudo mkdir -p /data/web_static/shared
-sudo mkdir -p /data/web_static/current
+sudo mkdir -p /data/web_static/releases/test /data/web_static/shared
 
 # Create a fake HTML file
 echo "<html>
@@ -19,21 +17,18 @@ echo "<html>
   </body>
 </html>" | sudo tee /data/web_static/releases/test/index.html > /dev/null
 
-# Create or recreate symbolic link
-sudo ln -sf /data/web_static/releases/test /data/web_static/current
+# Create or recreate the symbolic link
+sudo ln -sf /data/web_static/releases/test/ /data/web_static/current
 
-# Give ownership to the ubuntu user and group
+# Give ownership to the ubuntu user and group recursively
 sudo chown -R ubuntu:ubuntu /data/
 
 # Update Nginx configuration
-nginx_config="/etc/nginx/sites-available/default"
-sudo sed -i '/location \/hbnb_static {/ {
-    alias \/data\/web_static\/current\/;
-}' $nginx_config
+config_file="/etc/nginx/sites-available/default"
+if ! grep -q "location /hbnb_static {" "$config_file"; then
+    sudo sed -i '/server_name _;/a \\n\tlocation /hbnb_static {\n\t\talias /data/web_static/current/;\n\t}' "$config_file"
+fi
 
 # Restart Nginx
 sudo service nginx restart
-
-# Exit successfully
-exit 0
 
