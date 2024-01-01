@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Number Template</title>
+</head>
+<body>
+    {% if is_number_template %}
+        <h1>Number: {{ n }}</h1>
+    {% else %}
+        <h1>Number: {{ n }} is {% if n % 2 == 0 %}even{% else %}odd{% endif %}</h1>
+    {% endif %}
+</body>
+</html>
