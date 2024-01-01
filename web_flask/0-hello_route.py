@@ -1,4 +1,5 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
+# a flask app
 from flask import Flask
 
 app = Flask(__name__)
